@@ -1,3 +1,5 @@
+using ContactsService.Interfaces;
+using ContactsService.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -29,6 +31,7 @@ namespace ContactsService
 
             // Register the Swagger services
             services.AddSwaggerDocument();
+            services.AddSingleton<IMessageBusClient, RabbitMQClient>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

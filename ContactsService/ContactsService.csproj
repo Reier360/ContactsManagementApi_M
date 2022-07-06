@@ -6,6 +6,11 @@
 
   <ItemGroup>
     <PackageReference Include="NSwag.AspNetCore" Version="13.16.1" />
+    <PackageReference Include="RabbitMQ.Client" Version="6.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Models\Models.csproj" />
   </ItemGroup>
 
 
