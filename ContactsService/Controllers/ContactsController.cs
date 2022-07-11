@@ -1,4 +1,5 @@
 ﻿using ContactsService.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -24,6 +25,7 @@ namespace ContactsService.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public Object Add(ContactAdd info)
         {
 
@@ -32,6 +34,7 @@ namespace ContactsService.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = "Admin")]
         public Object Edit(ContactEdit info)
         {
             _messageBusClient.PublishMessage(info);
@@ -39,13 +42,18 @@ namespace ContactsService.Controllers
         }
 
         [HttpDelete]
-        public Object Delete(ContactDelete info)
+        [Authorize(Roles = "Admin")]
+        public Object Delete(int id)
         {
-            _messageBusClient.PublishMessage(info);
+            _messageBusClient.PublishMessage(new ContactDelete
+            {
+                Id = id
+            });
             return Ok();
         }
 
         [HttpGet]
+        [Authorize]
         public Object List()
         {
             return Ok();

@@ -1,10 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using ContactsService.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Models;
 
 namespace ContactsService.Controllers
 {
@@ -13,16 +11,26 @@ namespace ContactsService.Controllers
     public class LoginController : ControllerBase
     {
         private readonly ILogger<LoginController> _logger;
+        private readonly IApiAuth _apiAuth;
 
-        public LoginController(ILogger<LoginController> logger)
+        public LoginController(ILogger<LoginController> logger, IApiAuth apiAuth)
         {
             _logger = logger;
+            _apiAuth = apiAuth;
         }
 
         [HttpPost]
-        public Object Login()
+        public IActionResult Login([FromBody] Login user)
         {
-            return Ok();
+            if (user == null)
+                return BadRequest("Invalid user");
+
+            var tokenString = _apiAuth.AuthenticateUser(user.Username, user.Password);
+
+            if (string.IsNullOrEmpty(tokenString))
+                return Unauthorized();
+
+            return Ok(new { Token = tokenString });
         }
     }
 }
