@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Models.Enums;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Models
+namespace Models.Contacts
 {
     public class ContactDelete
     {

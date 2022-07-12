@@ -1,5 +1,7 @@
 using ContactsService.Interfaces;
 using ContactsService.Services;
+using DataAccess.Interfaces;
+using DataAccess.PostgreSQL;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -66,6 +68,7 @@ namespace ContactsService
             services.AddSwaggerDocument();
             services.AddSingleton<IMessageBusClient, RabbitMQClient>();
             services.AddSingleton<IApiAuth, MockApiAuth>();
+            services.AddSingleton<ICustomerDBContext>(new CustomerDBContext(Configuration["ConnectionStrings:PostgreSQL"]));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

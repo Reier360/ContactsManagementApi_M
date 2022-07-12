@@ -7,6 +7,6 @@ namespace ContactsService.Interfaces
 {
     public interface IMessageBusClient
     {
-        void PublishMessage<T>(T Message);
+        void PublishMessage<T>(T message);
     }
 }

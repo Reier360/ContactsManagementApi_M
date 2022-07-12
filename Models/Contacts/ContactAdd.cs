@@ -1,6 +1,7 @@
-﻿using System;
+﻿using Models.Enums;
+using System;
 
-namespace Models
+namespace Models.Contacts
 {
     public class ContactAdd
     {

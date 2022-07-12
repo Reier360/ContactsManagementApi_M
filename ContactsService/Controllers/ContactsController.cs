@@ -1,13 +1,11 @@
 ﻿using ContactsService.Interfaces;
+using DataAccess.Interfaces;
+using DataAccess.PostgreSQL;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Models;
+using Models.Contacts;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace ContactsService.Controllers
 {
@@ -17,16 +15,18 @@ namespace ContactsService.Controllers
     {
         private readonly ILogger<ContactsController> _logger;
         private readonly IMessageBusClient _messageBusClient;
+        private readonly ICustomerDBContext _customerContext;
 
-        public ContactsController(ILogger<ContactsController> logger, IMessageBusClient messageBusClient)
+        public ContactsController(ILogger<ContactsController> logger, IMessageBusClient messageBusClient, ICustomerDBContext customerContext)
         {
             _logger = logger;
             _messageBusClient = messageBusClient;
+            _customerContext = customerContext;
         }
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public Object Add(ContactAdd info)
+        public IActionResult Add(ContactAdd info)
         {
 
             _messageBusClient.PublishMessage(info);
@@ -35,7 +35,7 @@ namespace ContactsService.Controllers
 
         [HttpPut]
         [Authorize(Roles = "Admin")]
-        public Object Edit(ContactEdit info)
+        public IActionResult Edit(ContactEdit info)
         {
             _messageBusClient.PublishMessage(info);
             return Ok();
@@ -43,7 +43,7 @@ namespace ContactsService.Controllers
 
         [HttpDelete]
         [Authorize(Roles = "Admin")]
-        public Object Delete(int id)
+        public IActionResult Delete(int id)
         {
             _messageBusClient.PublishMessage(new ContactDelete
             {
@@ -54,9 +54,9 @@ namespace ContactsService.Controllers
 
         [HttpGet]
         [Authorize]
-        public Object List()
+        public IActionResult List(int skip = 0, int take = 20, string column = "", string ascDesc = "")
         {
-            return Ok();
+            return Ok(_customerContext.List(skip, take, column, ascDesc));
         }
     }
 }
