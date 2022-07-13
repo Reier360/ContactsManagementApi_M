@@ -15,6 +15,11 @@ namespace ContactsService.Validators
                 .NotEmpty();
             RuleFor(r => r.Surname)
                 .NotEmpty();
+            RuleFor(r => r.EmailAddress)
+                .NotEmpty()
+                .WithMessage("Email address is required")
+                .EmailAddress()
+                .WithMessage("A valid email is required");
             RuleFor(r => r.TelephoneNumber)
                 .NotEmpty();
             RuleFor(r => r.DateOfBirth).NotEmpty()

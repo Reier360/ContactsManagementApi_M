@@ -1,12 +1,9 @@
 ﻿using AutoMapper;
 using ContactsService.Interfaces;
 using DataAccess.Interfaces;
-using DataAccess.PostgreSQL;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Models.Contacts;
-using System;
 using System.Collections.Generic;
 
 namespace ContactsService.Controllers
@@ -28,7 +25,7 @@ namespace ContactsService.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost]
+        [HttpPost("add")]
         //[Authorize(Roles = "Admin")]
         public IActionResult Add(ContactAddDto info)
         {
