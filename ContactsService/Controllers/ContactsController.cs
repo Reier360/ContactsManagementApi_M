@@ -1,4 +1,5 @@
-﻿using ContactsService.Interfaces;
+﻿using AutoMapper;
+using ContactsService.Interfaces;
 using DataAccess.Interfaces;
 using DataAccess.PostgreSQL;
 using Microsoft.AspNetCore.Authorization;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Models.Contacts;
 using System;
+using System.Collections.Generic;
 
 namespace ContactsService.Controllers
 {
@@ -16,36 +18,37 @@ namespace ContactsService.Controllers
         private readonly ILogger<ContactsController> _logger;
         private readonly IMessageBusClient _messageBusClient;
         private readonly ICustomerDBContext _customerContext;
+        private readonly IMapper _mapper;
 
-        public ContactsController(ILogger<ContactsController> logger, IMessageBusClient messageBusClient, ICustomerDBContext customerContext)
+        public ContactsController(ILogger<ContactsController> logger, IMessageBusClient messageBusClient, ICustomerDBContext customerContext, IMapper mapper)
         {
             _logger = logger;
             _messageBusClient = messageBusClient;
             _customerContext = customerContext;
+            _mapper = mapper;
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
-        public IActionResult Add(ContactAdd info)
+        //[Authorize(Roles = "Admin")]
+        public IActionResult Add(ContactAddDto info)
         {
-
-            _messageBusClient.PublishMessage(info);
+            _messageBusClient.PublishMessage(_mapper.Map<ContactAddEvent>(info));
             return Ok();
         }
 
         [HttpPut]
-        [Authorize(Roles = "Admin")]
-        public IActionResult Edit(ContactEdit info)
+        //[Authorize(Roles = "Admin")]
+        public IActionResult Edit(ContactEditDto info)
         {
-            _messageBusClient.PublishMessage(info);
+            _messageBusClient.PublishMessage(_mapper.Map<ContactEditEvent>(info));
             return Ok();
         }
 
         [HttpDelete]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public IActionResult Delete(int id)
         {
-            _messageBusClient.PublishMessage(new ContactDelete
+            _messageBusClient.PublishMessage(new ContactDeleteEvent
             {
                 Id = id
             });
@@ -53,10 +56,10 @@ namespace ContactsService.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        //[Authorize]
         public IActionResult List(int skip = 0, int take = 20, string column = "", string ascDesc = "")
         {
-            return Ok(_customerContext.List(skip, take, column, ascDesc));
+            return Ok(_mapper.Map<IList<ContactListDto>>(_customerContext.List(skip, take, column, ascDesc)));
         }
     }
 }

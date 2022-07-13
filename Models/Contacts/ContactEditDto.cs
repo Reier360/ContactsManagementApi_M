@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Models.Enums;
+using System;
 
-namespace Models.Entities
+namespace Models.Contacts
 {
-    public class Contact
+    public class ContactEditDto
     {
         public int Id { get; set; }
         public string Name { get; set; }

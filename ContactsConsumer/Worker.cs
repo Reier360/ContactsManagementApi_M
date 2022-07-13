@@ -1,3 +1,5 @@
+using ContactsConsumer.Interfaces;
+using DataAccess.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -20,10 +22,15 @@ namespace ContactsConsumer
         public IModel _channel;
         private string _queueName;
 
-        public Worker(ILogger<Worker> logger, IConfiguration configuration)
+        private readonly ICustomerDBContext _customerContext;
+        private readonly IEventProcessor _eventProcessor;
+
+        public Worker(ILogger<Worker> logger, IConfiguration configuration, ICustomerDBContext customerContext, IEventProcessor eventProcessor)
         {
             _logger = logger;
             _configuration = configuration;
+            _customerContext = customerContext;
+            _eventProcessor = eventProcessor;
             InitialiseRabbitMQ();
         }
 
@@ -39,6 +46,8 @@ namespace ContactsConsumer
 
                 var body = ea.Body;
                 var notificatonMessage = Encoding.UTF8.GetString(body.ToArray());
+
+                _eventProcessor.ConsumeEvent(notificatonMessage);
             };
 
             _channel.BasicConsume(queue: _queueName, autoAck: true, consumer: consumer);

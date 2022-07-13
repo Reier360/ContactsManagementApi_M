@@ -5,10 +5,10 @@ using System.Text;
 
 namespace Models.Contacts
 {
-    public class ContactDelete
+    public class ContactDeleteEvent
     {
         public int Id { get; set; }
 
-        public EnumContactActions Event { get; } = EnumContactActions.Delete;
+        public EnumContactActions Event { get; } = EnumContactActions.ContactDelete;
     }
 }

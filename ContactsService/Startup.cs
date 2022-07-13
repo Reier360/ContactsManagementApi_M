@@ -5,19 +5,13 @@ using DataAccess.PostgreSQL;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using FluentValidation.AspNetCore;
 
 namespace ContactsService
 {
@@ -62,7 +56,13 @@ namespace ContactsService
                     .AllowAnyMethod();
                 });
             });
-            services.AddControllers();
+            services.AddControllers().AddFluentValidation(r =>
+            {
+                //r.AutomaticValidationEnabled = true;
+                r.RegisterValidatorsFromAssemblyContaining<Startup>();
+            });
+
+            services.AddAutoMapper(typeof(Startup));
 
             // Register the Swagger services
             services.AddSwaggerDocument();
