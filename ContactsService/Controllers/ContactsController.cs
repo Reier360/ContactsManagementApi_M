@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ContactsService.Interfaces;
 using DataAccess.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Models.Contacts;
@@ -27,8 +28,16 @@ namespace ContactsService.Controllers
             _mapper = mapper;
         }
 
+        [HttpPost("list")]
+        [Authorize]
+        public async Task<IList<ContactListDto>> List(DatatablePagination paging)
+        {
+            var items = _customerContext.List(paging.skip, paging.take, paging.orderColumn, paging.ascDesc);
+            return _mapper.Map<IList<ContactListDto>>(items);
+        }
+
         [HttpPost("add")]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Add(ContactAddDto info)
         {
             _messageBusClient.PublishMessage(_mapper.Map<ContactAddEvent>(info));
@@ -36,7 +45,7 @@ namespace ContactsService.Controllers
         }
 
         [HttpPut("edit")]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Edit(ContactEditDto info)
         {
             _messageBusClient.PublishMessage(_mapper.Map<ContactEditEvent>(info));
@@ -44,7 +53,7 @@ namespace ContactsService.Controllers
         }
 
         [HttpDelete("delete/{id}")]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Delete(int id)
         {
             _messageBusClient.PublishMessage(new ContactDeleteEvent
@@ -52,18 +61,10 @@ namespace ContactsService.Controllers
                 Id = id
             });
             return Ok();
-        }
-
-        [HttpPost("list")]
-        //[Authorize]
-        public async Task<IList<ContactListDto>> List(DatatablePagination paging)
-        {
-            var items = _customerContext.List(paging.skip, paging.take, paging.orderColumn, paging.ascDesc);
-            return _mapper.Map<IList<ContactListDto>>(items);
-        }
+        }        
 
         [HttpGet("get/{id}")]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<ContactItemDto> Get(int id)
         {
             var item = _customerContext.Get(id);
@@ -71,7 +72,7 @@ namespace ContactsService.Controllers
         }
 
         [HttpGet("count")]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<int> Count()
         {
             return _customerContext.Count();

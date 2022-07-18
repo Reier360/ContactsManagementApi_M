@@ -27,11 +27,7 @@ namespace ContactsService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAuthentication(opt =>
-            {
-                opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(opt =>
             {
                 opt.TokenValidationParameters = new TokenValidationParameters
@@ -56,9 +52,10 @@ namespace ContactsService
                     .AllowAnyMethod();
                 });
             });
+
             services.AddControllers().AddFluentValidation(r =>
             {
-                //r.AutomaticValidationEnabled = true;
+                r.AutomaticValidationEnabled = true;
                 r.RegisterValidatorsFromAssemblyContaining<Startup>();
             });
 
@@ -66,6 +63,7 @@ namespace ContactsService
 
             // Register the Swagger services
             services.AddSwaggerDocument();
+
             services.AddSingleton<IMessageBusClient, RabbitMQClient>();
             services.AddSingleton<IApiAuth, MockApiAuth>();
             services.AddSingleton<ICustomerDBContext>(new ContactsDBContext(Configuration["ConnectionStrings:PostgreSQL"]));

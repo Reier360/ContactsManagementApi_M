@@ -36,6 +36,7 @@ namespace DataAccess.PostgreSQL
                 cmd.Prepare();
                 cmd.ExecuteNonQuery();
                 _connection.Close();
+
             }
 
         }
