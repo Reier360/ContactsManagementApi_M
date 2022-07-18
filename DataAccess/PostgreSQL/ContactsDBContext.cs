@@ -44,9 +44,9 @@ namespace DataAccess.PostgreSQL
         {
             string query = $"delete from contacts where id = {Id}";
             using (var _connection = new NpgsqlConnection(_connectionString))
-            {                
-                NpgsqlCommand cmd = new NpgsqlCommand(query, _connection);
+            {
                 _connection.Open();
+                NpgsqlCommand cmd = new NpgsqlCommand(query, _connection);               
                 cmd.ExecuteNonQuery();
                 _connection.Close();
             }
@@ -83,7 +83,7 @@ namespace DataAccess.PostgreSQL
             {
                 query += $" {ascDesc}";
             }
-            query += $" limit {take} offset {skip}";
+            query += $" limit {take} offset {skip * take}";
             using (var _connection = new NpgsqlConnection(_connectionString))
             {
                 _connection.Open();
