@@ -4,7 +4,9 @@ using DataAccess.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Models.Contacts;
+using Models.Helpers;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace ContactsService.Controllers
 {
@@ -33,7 +35,7 @@ namespace ContactsService.Controllers
             return Ok();
         }
 
-        [HttpPut]
+        [HttpPut("edit")]
         //[Authorize(Roles = "Admin")]
         public IActionResult Edit(ContactEditDto info)
         {
@@ -41,7 +43,7 @@ namespace ContactsService.Controllers
             return Ok();
         }
 
-        [HttpDelete]
+        [HttpDelete("delete/{id}")]
         //[Authorize(Roles = "Admin")]
         public IActionResult Delete(int id)
         {
@@ -52,11 +54,27 @@ namespace ContactsService.Controllers
             return Ok();
         }
 
-        [HttpGet]
+        [HttpPost("list")]
         //[Authorize]
-        public IActionResult List(int skip = 0, int take = 20, string column = "", string ascDesc = "")
+        public async Task<IList<ContactListDto>> List(DatatablePagination paging)
         {
-            return Ok(_mapper.Map<IList<ContactListDto>>(_customerContext.List(skip, take, column, ascDesc)));
+            var items = _customerContext.List(paging.skip, paging.take, paging.orderColumn, paging.ascDesc);
+            return _mapper.Map<IList<ContactListDto>>(items);
+        }
+
+        [HttpGet("get/{id}")]
+        //[Authorize(Roles = "Admin")]
+        public async Task<ContactItemDto> Get(int id)
+        {
+            var item = _customerContext.Get(id);
+            return _mapper.Map<ContactItemDto>(item);
+        }
+
+        [HttpGet("count")]
+        //[Authorize(Roles = "Admin")]
+        public async Task<int> Count()
+        {
+            return _customerContext.Count();
         }
     }
 }

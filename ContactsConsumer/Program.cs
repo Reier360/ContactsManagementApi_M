@@ -26,7 +26,7 @@ namespace ContactsConsumer
                     IConfiguration configuration = hostContext.Configuration;
 
                     services.AddHostedService<Worker>();
-                    services.AddSingleton<ICustomerDBContext>(new CustomerDBContext(configuration["ConnectionStrings:PostgreSQL"]));
+                    services.AddSingleton<ICustomerDBContext>(new ContactsDBContext(configuration["ConnectionStrings:PostgreSQL"]));
                     services.AddSingleton<IEventProcessor, EventProcessor.EventProcessor>();
                 });
     }

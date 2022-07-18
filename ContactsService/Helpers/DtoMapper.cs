@@ -15,6 +15,7 @@ namespace ContactsService.Helpers
             CreateMap<ContactEditDto, ContactEditEvent>();
             CreateMap<ContactAddDto, ContactAddEvent>();
             CreateMap<Contact, ContactListDto>();
+            CreateMap<Contact, ContactItemDto>();
         }
     }
 }

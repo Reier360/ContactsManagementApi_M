@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace DataAccess.Interfaces
 {
@@ -11,5 +12,7 @@ namespace DataAccess.Interfaces
         void Edit(Contact info);
         void Delete(int Id);
         List<Contact> List(int skip, int take, string orderColumn, string ascDesc);
+        int Count();
+        Contact Get(int Id);
     }
 }

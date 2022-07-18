@@ -68,7 +68,7 @@ namespace ContactsService
             services.AddSwaggerDocument();
             services.AddSingleton<IMessageBusClient, RabbitMQClient>();
             services.AddSingleton<IApiAuth, MockApiAuth>();
-            services.AddSingleton<ICustomerDBContext>(new CustomerDBContext(Configuration["ConnectionStrings:PostgreSQL"]));
+            services.AddSingleton<ICustomerDBContext>(new ContactsDBContext(Configuration["ConnectionStrings:PostgreSQL"]));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
